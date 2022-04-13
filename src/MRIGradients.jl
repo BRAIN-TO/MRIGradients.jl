@@ -7,6 +7,7 @@ using MAT
 using DSP
 using FourierTools
 using NFFT
+using AbstractFFTs
 
 include("Util.jl")
 include("GIRFEssential.jl")

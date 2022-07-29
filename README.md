@@ -1,4 +1,4 @@
-# MRIGradients
+# MRIGradients.jl
 
 (Under Construction)
 

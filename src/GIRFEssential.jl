@@ -153,10 +153,11 @@ Function to read GIRF files with specific variable name and return a correspondi
 * `pathY::String` - Full path for GIRF MAT-file on Y axis
 * `pathZ::String` - Full path for GIRF MAT-file on Z axis
 * `varName::String` - Variable name that needs to be read as GIRF data from the MAT-files.
-* `doFilter::Bool` - Whether we filter the GIRF data using Turkey filter
+* `doFilter::Bool` - Whether we filter the GIRF data using Tukey filter
 """
 function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::String, doFilter::Bool)
 
+    # Read in the MAT files containing the GIRF data structure
     GIRF_file_x = matread(pathX)
     GIRF_file_y = matread(pathY)
     GIRF_file_z = matread(pathZ)
@@ -185,7 +186,8 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
         GIRF_freq = range(-freq_fullrange/2, stop=freq_fullrange/2, length=GIRF_length)
     end
 
-    if doFilter
+    # low pass filter to remove high frequency noisy measurements (can be tweaked)
+    if doFilter  
         window = tukey(GIRF_length, 0.25, zerophase = false)
         for l = 1:3
             GIRF_data[:,l] = window .* GIRF_data[:,l]
@@ -199,7 +201,7 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
 end
 
 
-## Function to load girf data from file into GirfEssential object
+## DEPRECATED: Function to load girf data from file into GirfEssential object
 #
 # IN
 # filename  Name of file to load data from

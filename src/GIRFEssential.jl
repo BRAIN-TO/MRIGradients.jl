@@ -1,4 +1,4 @@
-export GirfEssential, convertDomain!, time2freq, loadGirf, setIdentifier!, buildGIRF_K0, buildGIRF_PN
+export GirfEssential, convertDomain!, time2freq, readGIRFFile, loadGirf, setIdentifier!, buildGIRF_K0, buildGIRF_PN
 
 ## GirfEssential
 #  Struct definition as per Johanna's GirfEssential class in GIRF MATLAB repo
@@ -143,8 +143,65 @@ function setIdentifier!(g::GirfEssential, identifier::String)
 
 end
 
+"""
+    readGIRFFile(g::GirfEssential, pathX::String, pathY::String, pathZ::String, varName::String, doFilter::Bool)
 
-## Function to load girf data from file into GirfEssential object
+Function to read GIRF files with specific variable name and return a corresponding GIRFEssential object.
+
+# Arguments
+* `pathX::String` - Full path for GIRF MAT-file on X axis
+* `pathY::String` - Full path for GIRF MAT-file on Y axis
+* `pathZ::String` - Full path for GIRF MAT-file on Z axis
+* `varName::String` - Variable name that needs to be read as GIRF data from the MAT-files.
+* `doFilter::Bool` - Whether we filter the GIRF data using Tukey filter
+"""
+function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::String, doFilter::Bool)
+
+    # Read in the MAT files containing the GIRF data structure
+    GIRF_file_x = matread(pathX)
+    GIRF_file_y = matread(pathY)
+    GIRF_file_z = matread(pathZ)
+
+
+    # Average GIRF across the 2nd dimension, even if it's already done.
+    tmp_data = GIRF_file_x[varName]
+    GIRF_length = size(tmp_data,1) .-1
+    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+
+    tmp_data = mean(GIRF_file_x[varName], dims = 2)
+    GIRF_data[:, 1] = tmp_data[2:end]
+    tmp_data = mean(GIRF_file_y[varName], dims = 2)
+    GIRF_data[:, 2] = tmp_data[2:end]
+    tmp_data = mean(GIRF_file_z[varName], dims = 2)
+    GIRF_data[:, 3] = tmp_data[2:end]
+
+    GIRF_data[:,1] = mean(GIRF_data[:,1], dims=2)
+
+    # If freq was not saved, it needs to be computed
+    if haskey(GIRF_file_x, "freq")
+        GIRF_freq = GIRF_file_x["freq"][2:end]
+    else
+        dwellTimeSig = GIRF_file_x["dwellTimeSig"]
+        freq_fullrange = 1 / (dwellTimeSig / 1e6) / 1e3 # Full spectrum width, in unit of kHz
+        GIRF_freq = range(-freq_fullrange/2, stop=freq_fullrange/2, length=GIRF_length)
+    end
+
+    # low pass filter to remove high frequency noisy measurements (can be tweaked)
+    if doFilter  
+        window = tukey(GIRF_length, 0.25, zerophase = false)
+        for l = 1:3
+            GIRF_data[:,l] = window .* GIRF_data[:,l]
+        end
+    end
+
+    # Converted the unit of GIRF frequency range from kHz to Hz
+    GIRF_freq = GIRF_freq.*1000
+
+    return GirfEssential(GIRF_data, GIRF_freq, true, ["X", "Y", "Z"], [3])
+end
+
+
+## DEPRECATED: Function to load girf data from file into GirfEssential object
 #
 # IN
 # filename  Name of file to load data from
@@ -164,13 +221,22 @@ end
 # The package is available under a BSD 3-clause license. Further info see:
 # https://github.com/MRI-gradient/girf
 #
-# TODO
+function loadGirf(degree = 1, id = 1)
 
-function loadGirf(g::GirfEssential, filename::String)
+    if degree == 1
+        gFreq, gData = loadGIRFMatlabTim(1)
+    elseif degree == 0
+        gFreq, gData = buildGIRF_K0()
+    else
+        @error "Tried to load unexpected GIRF degree"
+    end
 
-    # gFreq, gData = buildGIRF_PN()
+    @info "Converted GIRF from kHz to Hz"
+    gFreq = gFreq.*1000
 
-    @info "Loaded GirfEssential data from $filename"
+    @info "Loaded GIRF data\n"
+
+    return GirfEssential(gData, gFreq, true, ["X", "Y", "Z"], [3])
 
 end
 
@@ -200,26 +266,6 @@ end
 function saveGirf(g::GirfEssential, filename::String)
 
     @info "Saved GirfEssential to $filename"
-
-end
-
-## Function for loading (AJAFFRAY Pre-Built)
-function loadGirf(degree = 1, id = 1)
-
-    if degree == 1
-        gFreq, gData = loadGIRFMatlabTim(1)
-    elseif degree == 0
-        gFreq, gData = buildGIRF_K0()
-    else
-        @error "Tried to load unexpected GIRF degree"
-    end
-
-    @info "Converted GIRF from kHz to Hz"
-    gFreq = gFreq.*1000
-
-    @info "Loaded GIRF data\n"
-
-    return GirfEssential(gData, gFreq, true, ["X", "Y", "Z"], [3])
 
 end
 

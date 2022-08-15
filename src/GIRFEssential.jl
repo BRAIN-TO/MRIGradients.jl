@@ -221,6 +221,16 @@ end
 # The package is available under a BSD 3-clause license. Further info see:
 # https://github.com/MRI-gradient/girf
 #
+
+
+"""
+    loadGirf(degree, id)
+
+Function to load girf with specified id according to hardcoded file structure (internal use only)
+# Arguments
+* `degree` - specifies degree of the girf (1st or 0th order correction)
+* `id` - specifies girf measurement id since there have been multiple measurements
+"""
 function loadGirf(degree = 1, id = 1)
 
     if degree == 1
@@ -601,7 +611,16 @@ function setSelfBasis(g::GirfEssential)
 
 end
 
-##  Function for displaying girf in terminal reasonably
+
+"""
+    displayGirf(g::GirfEssential)
+
+Function to print out the girf data in a human-readable format as a summary to make sure data is loaded properly
+
+# Arguments
+* `g::GirfEssential` - GirfEssential structure containing GIRF data
+
+"""
 function displayGirf(g::GirfEssential)
 
     @info "GIRF INFORMATION"

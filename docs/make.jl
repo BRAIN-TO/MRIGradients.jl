@@ -13,5 +13,7 @@ makedocs(sitename="MRIGradients Documentation",
 )
 
 deploydocs(
-    repo="github.com/BRAIN-TO/MRIGradients.jl.git",push_preview = true,
+    repo="github.com/BRAIN-TO/MRIGradients.jl.git",
+    push_preview = true,
+    deploy_config = Documenter.GitHubActions(),
 )

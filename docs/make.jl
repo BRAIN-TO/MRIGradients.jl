@@ -13,5 +13,5 @@ makedocs(sitename="MRIGradients Documentation",
 )
 
 deploydocs(;
-    repo="github.com/BRAIN-TO/MRIGradients.jl",
+    repo="github.com/BRAIN-TO/MRIGradients.jl",push_preview = true,
 )

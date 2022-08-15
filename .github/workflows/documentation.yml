@@ -29,7 +29,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: julia-actions/setup-julia@latest
+      - name: Setup Pages
+        uses: actions/configure-pages@v1
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - name: Build Docs through Julia Documenter
+        uses: julia-actions/setup-julia@latest
         with:
           version: '1.7'
       - name: Install dependencies
@@ -39,6 +47,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
         run: julia --project=docs docs/make.jl
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
 
   # Deployment job
   deploy:

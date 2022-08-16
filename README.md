@@ -1,6 +1,6 @@
 # MRIGradients.jl
 
-(Under Construction)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://brain-to.github.io/MRIGradients.jl)
 
 This package provides tools and structures to manipulate and apply gradient impulse response functions (GIRFs) to acquired imaging data using the MRIReco.jl datatypes.
 

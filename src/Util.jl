@@ -24,6 +24,10 @@ Port of Johanna Vannesjo's time2freq method: https://github.com/MRI-gradient/GIR
 # Arguments
 * `t` - input time vector
 
+# Outputs
+* `f` - Calculated requency axis, vector with [length(t)]
+* `df` - Frequency resolution
+* `f_max` - Full frequency range. The frequency axis range is [-f_max/2, f_max/2].
 """
 function time2freq(t)
 

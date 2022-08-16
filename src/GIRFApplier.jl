@@ -25,6 +25,9 @@ end
 * `time_in` - time vector corresponding to input gradient waveform
 * `time_out` - output time vector desired (decimation)
 * `direction` - direction of the GIRF to use (x,y,z etc...)
+
+# Outputs:
+* `grad_OUT_resampled` - Vector, gradient waveform with GIRF applied, in the time points of `time_out`.
 """
 function apply_girf(g::GirfApplier, gradient_in, time_in, time_out, direction)
 

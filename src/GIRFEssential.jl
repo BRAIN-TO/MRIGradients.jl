@@ -114,9 +114,6 @@ Copyright (C) 2014 IBT, University of Zurich and ETH Zurich,
               2016 FMRIB centre, University of Oxford
 
 """
-#
-# TODO edit comment to reflect in-place function on girf
-
 function convertDomain!(g::GirfEssential)
 
     if !g.isFreqDomainGirf

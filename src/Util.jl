@@ -267,7 +267,18 @@ end
       
 # end
 
-## Get gradients from the trajectory
+"""
+    nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
+
+Function to calculate the gradient train used to acquire k-space data
+
+# Arguments
+* `nodes::Matrix` - input k-space nodes traversed in order, acquired with constant dwell time. 
+* `gamma` - gyromagnetic ratio
+* `dwellTime` - the dwell time of the trajectory
+* `FOV` - spatial field of view in [mm]
+* `reconSize` - reconstruction matrix size
+"""
 function nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
 
   ## Normalized Conversion (norm kspace to grads in T/m) is scalingFactor = reconSize/(gamma*dwellTime*FOV)
@@ -279,7 +290,19 @@ function nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[
 
 end
 
-## Convert gradients to trajectory nodes
+
+"""
+    gradients_to_nodes(gradients::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
+
+Function to calculate the k-space nodes from an applied gradient train
+
+# Arguments
+* `gradients::Matrix` - input gradients played out, acquired with constant dwell time. 
+* `gamma` - gyromagnetic ratio
+* `dwellTime` - the dwell time of the trajectory
+* `FOV` - spatial field of view in [mm]
+* `reconSize` - reconstruction matrix size
+"""
 function gradients_to_nodes(gradients::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
 
   ## Normalized Conversion (grads in T/m to normalized k-space) is scalingFactor = (gamma*dwellTime*FOV)/reconSize

@@ -14,19 +14,6 @@ mutable struct GirfApplier
 
 end
 
-## Function for predicting the gradient by applying the GIRF
-# This is done in one dimension only. Repeat this function for multiple dimensions
-# Inputs:
-#   freq_GIRF: Vector (sampling frequencies for the GIRF data)
-#   GIRF: Vector (GIRF data in the frequency domain)
-#   time_in: Vector (Sampling times for the time domain gradient data)
-#   gradient_in: Vector (time domain gradient data sampled at times in time_in)
-#   time_out: Vector (desired sampling times for the output gradient)
-
-# Outputs:
-#   grad_OUT_resampled: Vector (filtered gradient data sampled at time_out)
-
-
 """
     apply_girf(g::GirfApplier, gradient_in, time_in, time_out, direction)
 
@@ -40,16 +27,6 @@ end
 * `direction` - direction of the GIRF to use (x,y,z etc...)
 """
 function apply_girf(g::GirfApplier, gradient_in, time_in, time_out, direction)
-
-    # Input variables
-    # time_in: input time vector
-    # gradient_in: input gradient
-    # directions: gradient correction directions
-    # convolution_type: type of convolution
-
-    # Output variables
-    # gradient_out: output gradient vector (sampled on time_out)
-    # time_out: output time vector
 
     # GET GIRF DATA FROM THE GIRF DATATYPE
     freq_GIRF = g.essential.freq

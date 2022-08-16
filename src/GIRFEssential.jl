@@ -58,7 +58,20 @@ isFreqDomain(g::GirfEssential) = g.isFreqDomainGirf
 numOutBasis(g::GirfEssential) = size(g.girf,2)
 numInChannels(g::GirfEssential) = size(g.girf, 3)
 
-## Function to create a girf structure with the same interface as the constructor in the MATLAB implementation
+"""
+    GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
+Function to create a girf structure with the same interface as the constructor in the MATLAB implementation.
+
+# Arguments
+* `data::AbstractVecOrMat` - [nSamples x nOutBasis x nInChannels] Full GIRF data.
+* `vect::AbstractVector` - [nSamples] Frequency vector indicating the frequency range, in unit of Hz.
+* `isFreq::Bool` - True for GIRF in frequency domain, false for GIRF in temporal domain.
+* `inChannels` - Input gradient and shim channel names.
+* `outBasis` - Output field basis.
+
+# Outputs
+* g::GirfEssential - Constructed GirfEssential object.
+"""
 function GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
 
     # Define unused and auxiliary parameters
@@ -83,26 +96,24 @@ function GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Boo
 
 end
 
-## Convert frequency-domain GIRF to time domain and vice versa
-#
-# IN
-# domain    Specify conversion domains {'freq2time' 'time2freq'}
-#           Default is determined by this.isFreqDomainGirf
-#
-# OUT
-#
-# EXAMPLE
-#   convertDomain!(g);
-#
-#   See also GirfEssential
-#
-# Author:   Johanna Vannesjo (johanna.vannesjo@gmail.com)
-# Copyright (C) 2014 IBT, University of Zurich and ETH Zurich,
-#               2016 FMRIB centre, University of Oxford
-#
-# This file is part of a code package for GIRF computation and application.
-# The package is available under a BSD 3-clause license. Further info see:
-# https://github.com/MRI-gradient/girf
+"""
+    convertDomain!(g::GirfEssential)
+Convert frequency-domain GIRF to time domain and vice versa. Also calculates dependent parameters.
+
+# Arguments
+* g::GirfEssential - The input GirfEssential object; conversion type is determined by g.isFreqDomainGirf
+
+# Outputs
+* g::GirfEssential - Modified GirfEssential object with converted/calculated fields.
+
+This function was created from part of a code package for GIRF computation and application in MATLAB.
+The package is available under a BSD 3-clause license. Further info see:
+https://github.com/MRI-gradient/girf
+Original MATLAB Author:   Johanna Vannesjo (johanna.vannesjo@gmail.com)
+Copyright (C) 2014 IBT, University of Zurich and ETH Zurich,
+              2016 FMRIB centre, University of Oxford
+
+"""
 #
 # TODO edit comment to reflect in-place function on girf
 
@@ -134,7 +145,17 @@ function convertDomain!(g::GirfEssential)
 
 end
 
-## Function to name the GIRF with an identifier
+"""
+    setIdentifier!(g::GirfEssential, identifier::String)
+Function to name the GIRF with an identifier
+
+# Arguments
+* g::GirfEssential - GirfEssential object needs the identifier to be set.
+* identifier::String - Input identifier.
+
+# Outputs
+* g::GirfEssential - GirfEssential object with the identifier set as the input.
+"""
 function setIdentifier!(g::GirfEssential, identifier::String)
 
     g.name = identifier

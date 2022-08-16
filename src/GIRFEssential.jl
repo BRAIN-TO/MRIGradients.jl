@@ -175,6 +175,9 @@ Function to read GIRF files with specific variable name and return a correspondi
 * `pathZ::String` - Full path for GIRF MAT-file on Z axis
 * `varName::String` - Variable name that needs to be read as GIRF data from the MAT-files.
 * `doFilter::Bool` - Whether we filter the GIRF data using Tukey filter
+
+# Outputs
+* g::GirfEssential - Constructed GirfEssential object with read-in data.
 """
 function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::String, doFilter::Bool)
 

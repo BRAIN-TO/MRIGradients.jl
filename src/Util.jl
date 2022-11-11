@@ -288,7 +288,7 @@ Function to calculate the gradient train used to acquire k-space data
 function nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
 
   ## Normalized Conversion (norm kspace to grads in T/m) is scalingFactor = reconSize/(gamma*dwellTime*FOV)
-  conversionFactor = reconSize./(gamma*dwellTime.*FOV)*1000 # The 1000 factor is the conversion from mm to m
+  conversionFactor = reconSize./ (gamma*dwellTime.*FOV) .*1000 # The 1000 factor is the conversion from mm to m
 
   is3DTraj = (size(nodes,1) == 3)
 
@@ -322,7 +322,7 @@ Function to calculate the k-space nodes from an applied gradient train
 function gradients_to_nodes(gradients::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
 
   ## Normalized Conversion (grads in T/m to normalized k-space) is scalingFactor = (gamma*dwellTime*FOV)/reconSize
-  conversionFactor = ((gamma*dwellTime.*FOV) ./ reconSize) /1000 # The 1000 is the conversion from mm to m
+  conversionFactor = ((gamma*dwellTime.*FOV) ./ reconSize) ./1000 # The 1000 is the conversion from mm to m
 
   is3DTraj = (size(gradients,1) == 3)
 

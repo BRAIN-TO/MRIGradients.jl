@@ -16,4 +16,12 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 Waveforms = "cb13b1c6-351e-5134-b3ad-d6a530956a82"
 
 [compat]
-julia = "^1.6"
+AbstractFFTs = "1.2.1"
+DSP = "0.7.6"
+Dierckx = "0.5.2"
+Documenter = "0.27.22"
+FourierTools = "0.3.4"
+MAT = "0.10.3"
+NFFT = "0.13.0"
+Waveforms = "0.1.1"
+julia = "1.6"

@@ -78,9 +78,12 @@ function apply_girf(g::GirfApplier, gradient_in, time_in, time_out, direction)
 
     ## filter the output to avoid aliasing
     # figure("Magnitude FFT of Response")
-    windowFunction = fftshift(tukey(length(GIRF_ip), 0.5;zerophase = true))
+    l_girf_ip = length(GIRF_ip)
+    npad = Int(floor(l_girf_ip * 0.7))
+
+    windowFunction = fftshift(tukey(l_girf_ip - npad, 0.1;padding = npad,zerophase = true))
     # plot(windowFunction)
-    # plot(GIRF_ip)
+    # plot!(GIRF_ip)
     GIRF_ip = windowFunction .* GIRF_ip
     # plot(GIRF_ip)
 

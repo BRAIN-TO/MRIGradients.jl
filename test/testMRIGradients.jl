@@ -16,10 +16,14 @@ function test_grads()
     @test abs.(correctedGradients[end] - -0.0258168) < 1e-6
 
     nodes = gradients_to_nodes(ones(2,1) .* correctedGradients')
-
     gradients = nodes_to_gradients(nodes)
 
     @test sqrt.(sum(abs2,ones(2,1).*correctedGradients' - gradients)) < 1e-9
+
+    nodes = gradients_to_nodes(ones(3,1) .* correctedGradients')
+    gradients = nodes_to_gradients(nodes)
+    
+    @test sqrt.(sum(abs2,ones(3,1).*correctedGradients' - gradients)) < 1e-9
 
 end
 

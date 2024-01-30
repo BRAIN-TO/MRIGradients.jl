@@ -33,7 +33,7 @@ function test_girf_essential()
     @test size(g.essential) == (16383,3)
     @test size(g.essential,1) == 16383
     
-    g.essential.name = "a"
+    setIdentifier!(g.essential,"a")
     @test string(g.essential) == "a"
     @test length(g.essential) == 16383
     

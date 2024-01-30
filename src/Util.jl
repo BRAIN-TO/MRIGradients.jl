@@ -1,5 +1,3 @@
-export time2freq, nodes_to_gradients, gradients_to_nodes
-
 ## Authors:   Johanna Vannesjo (johanna.vannesjo@gmail.com),
 #             Alexander Jaffray (alexander.jaffray@gmail.com),
 #             Lars Kasper,
@@ -65,11 +63,11 @@ end
 #
 # TODO
 
-function BW_filter(k_data, t, BW, filterType, beta)
+# function BW_filter(k_data, t, BW, filterType, beta)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Applies selected bandwidth window to input array
 #
@@ -90,11 +88,11 @@ end
 #
 # TODO
 
-function BW_window(array, f, BW, filterType, beta)
+# function BW_window(array, f, BW, filterType, beta)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function to compute unwrapped phase of complex vector, with zero phase at zero
 # frequency (assuming fftshift)
@@ -110,11 +108,11 @@ end
 #
 # TODO
 
-function CenteredPhase(array)
+# function CenteredPhase(array)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function to compute time vector, with zero at center (assuming fftshift)
 #
@@ -130,21 +128,21 @@ end
 #
 # TODO
 
-function CenteredTime(dt, nrs)
+# function CenteredTime(dt, nrs)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function to compute set of blip inputs
 #
 # TODO
 
-function ComputeInputs()
+# function ComputeInputs()
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function creates a raised cosine window for frequency domain filtering
 #
@@ -164,11 +162,11 @@ end
 #
 # TODO
 
-function raised_cosine(f, T, beta)
+# function raised_cosine(f, T, beta)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function to create frequency-swept pulses from parameters
 #
@@ -191,11 +189,11 @@ end
 #
 # TODO
 
-function sweeps(t, T_acq, f1, f2, phi0, A, t_start, type)
+# function sweeps(t, T_acq, f1, f2, phi0, A, t_start, type)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Function to create trapezoidal pulse shapes from parameters
 #
@@ -215,11 +213,11 @@ end
 #
 # TODO
 
-function trapezoid(t, ons, amp, dur, plateau, dur2)
+# function trapezoid(t, ons, amp, dur, plateau, dur2)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 ## Performs frequency-dependent smoothing of GIRF/SIRF
 #
@@ -239,11 +237,11 @@ end
 #
 # TODO
 
-function VariableSmoothing(SIRF, f, f2)
+# function VariableSmoothing(SIRF, f, f2)
 
-    @error "NOT IMPLEMENTED YET"
+#     @error "NOT IMPLEMENTED YET"
 
-end
+# end
 
 """
     nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])

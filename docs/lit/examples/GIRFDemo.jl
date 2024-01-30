@@ -1,6 +1,6 @@
 ## GIRF Demo file showing basic loading of GIRF
 
-using Waveforms, .MRIGradients
+using Waveforms, MRIGradients
 
 ## Demonstration:
 
@@ -30,10 +30,3 @@ time_vector = time_vector ./ 1000
 
 ## Filter test data with GIRF
 correctedGradients = apply_girf(girfApplier_k1, testSinusoid, time_vector, time_vector, 1)
-
-## Plot the result
-figure("Corrected vs. Uncorrected Gradients")
-plot(time_vector, correctedGradients)
-plot(time_vector, testSinusoid)
-xlabel("Time [s]")
-ylabel("Gradient Waveform [a.u]")

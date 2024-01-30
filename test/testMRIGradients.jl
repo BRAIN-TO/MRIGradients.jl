@@ -54,6 +54,18 @@ function test_display_girf()
 
 end
 
+function test_girf_essential_construct()
+
+    Nsamp = 1000
+    Nout = 4
+    Nin = 20
+
+    g = GirfEssential(ones(Float64,Nsamp,Nout,Nin),collect(1:Nsamp),true,collect(1:Nin),collect(1:Nout))
+
+    @test g.df == 1
+
+end
+
 function test_girf_applier()
 
     girf_applier_k1 = load_object("data/girf_app_k1.jld2")
@@ -73,6 +85,7 @@ function test_package()
         test_girf_applier()
         test_display_girf()
         test_girf_essential()
+        test_girf_essential_construct()
 
     end
 

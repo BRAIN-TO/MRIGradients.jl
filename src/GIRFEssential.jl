@@ -15,13 +15,13 @@ mutable struct GirfEssential
     outBasis::AbstractVecOrMat
 
     # [nSamples x nOutBasis x nInChannels] Calculated GIRF (self and cross-terms)
-    girf::AbstractVecOrMat
+    girf::AbstractArray
 
     # [nSamples] frequency vector [units Hz]
     freq::AbstractVector
 
     # [nSamples x nOutBasis x nInChannels] if GIRF is in the time domain
-    girfTime::AbstractVecOrMat
+    girfTime::AbstractArray
 
     # [nSamples] time vector
     time::AbstractVector
@@ -68,7 +68,7 @@ Function to create a girf structure with the same interface as the constructor i
 # Outputs
 * g::GirfEssential - Constructed GirfEssential object.
 """
-function GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
+function GirfEssential(data::AbstractArray, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
 
     # Define unused and auxiliary parameters
     # inChannels = ["Empty"]

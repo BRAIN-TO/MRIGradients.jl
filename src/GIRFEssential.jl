@@ -1,10 +1,6 @@
-export GirfEssential, convertDomain!, time2freq, readGIRFFile, loadGirf, setIdentifier!, buildGIRF_K0, buildGIRF_PN
-
 ## GirfEssential
 #  Struct definition as per Johanna's GirfEssential class in GIRF MATLAB repo
 mutable struct GirfEssential
-
-    ## INDEPENDENT PROPERTIES (i.e. PROPERTIES SET AT INSTANTIATION)
 
     # GIRF identifier or tag
     name::String
@@ -47,7 +43,7 @@ end
 #  (Continue) Standard Method Overloading for GIRF
 
 Base.size(g::GirfEssential) = size(g.girf)
-Base.size(g::GirfEssential, i::Int) = size(g.girf,i)
+Base.size(g::GirfEssential, i::Int) = size(g.girf, i)
 Base.string(g::GirfEssential) = g.name
 Base.print(g::GirfEssential) = displayGirf(g)
 Base.length(g::GirfEssential) = size(g.girf, 1)
@@ -55,7 +51,7 @@ Base.length(g::GirfEssential) = size(g.girf, 1)
 ## TODO
 #  Continue Get and Set methods
 isFreqDomain(g::GirfEssential) = g.isFreqDomainGirf
-numOutBasis(g::GirfEssential) = size(g.girf,2)
+numOutBasis(g::GirfEssential) = size(g.girf, 2)
 numInChannels(g::GirfEssential) = size(g.girf, 3)
 
 """
@@ -86,11 +82,8 @@ function GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Boo
 
     # Call to standard constructor
     g = GirfEssential(identifier, isFreq, inChannels, outBasis, data, vect, girfTime, time, df, dt, selfBasis)
-
     convertDomain!(g)
 
-    # @info "Created GirfEssential Structure with the parameters as follows:"
-    # print(g)
 
     return g
 
@@ -156,7 +149,6 @@ Function to name the GIRF with an identifier
 function setIdentifier!(g::GirfEssential, identifier::String)
 
     g.name = identifier
-
     @info "Name has been set as: $identifier\n"
 
 end
@@ -183,11 +175,10 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
     GIRF_file_y = matread(pathY)
     GIRF_file_z = matread(pathZ)
 
-
     # Average GIRF across the 2nd dimension, even if it's already done.
     tmp_data = GIRF_file_x[varName]
-    GIRF_length = size(tmp_data,1) .-1
-    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+    GIRF_length = size(tmp_data, 1) .- 1
+    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
 
     tmp_data = mean(GIRF_file_x[varName], dims = 2)
     GIRF_data[:, 1] = tmp_data[2:end]
@@ -196,7 +187,7 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
     tmp_data = mean(GIRF_file_z[varName], dims = 2)
     GIRF_data[:, 3] = tmp_data[2:end]
 
-    GIRF_data[:,1] = mean(GIRF_data[:,1], dims=2)
+    GIRF_data[:, 1] = mean(GIRF_data[:, 1], dims = 2)
 
     # If freq was not saved, it needs to be computed
     if haskey(GIRF_file_x, "freq")
@@ -204,19 +195,19 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
     else
         dwellTimeSig = GIRF_file_x["dwellTimeSig"]
         freq_fullrange = 1 / (dwellTimeSig / 1e6) / 1e3 # Full spectrum width, in unit of kHz
-        GIRF_freq = range(-freq_fullrange/2, stop=freq_fullrange/2, length=GIRF_length)
+        GIRF_freq = range(-freq_fullrange / 2, stop = freq_fullrange / 2, length = GIRF_length)
     end
 
     # low pass filter to remove high frequency noisy measurements (can be tweaked)
-    if doFilter  
+    if doFilter
         window = tukey(GIRF_length, 0.25, zerophase = false)
         for l = 1:3
-            GIRF_data[:,l] = window .* GIRF_data[:,l]
+            GIRF_data[:, l] = window .* GIRF_data[:, l]
         end
     end
 
     # Converted the unit of GIRF frequency range from kHz to Hz
-    GIRF_freq = GIRF_freq.*1000
+    GIRF_freq = GIRF_freq .* 1000
 
     return GirfEssential(GIRF_data, GIRF_freq, true, ["X", "Y", "Z"], [3])
 end
@@ -263,7 +254,7 @@ function loadGirf(degree = 1, id = 1)
     end
 
     @info "Converted GIRF from kHz to Hz"
-    gFreq = gFreq.*1000
+    gFreq = gFreq .* 1000
 
     @info "Loaded GIRF data\n"
 
@@ -316,11 +307,11 @@ function buildGIRF()
 
     GIRF_length = length(GIRF_file_x["GIRF_FT"]) .- 1
 
-    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
 
-    GIRF_data[:,1] = GIRF_file_x["GIRF_FT"][2:end]
-    GIRF_data[:,2] = GIRF_file_y["GIRF_FT"][2:end]
-    GIRF_data[:,3] = GIRF_file_z["GIRF_FT"][2:end]
+    GIRF_data[:, 1] = GIRF_file_x["GIRF_FT"][2:end]
+    GIRF_data[:, 2] = GIRF_file_y["GIRF_FT"][2:end]
+    GIRF_data[:, 3] = GIRF_file_z["GIRF_FT"][2:end]
 
     return GIRF_data
 
@@ -357,20 +348,20 @@ function buildGIRF_PN(doPlot = true, doFiltering = true; id = 2)
 
     GIRF_length = length(GIRF_file_x["GIRF_FT"]) .- 1
 
-    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
 
-    GIRF_data[:,1] = GIRF_file_x["GIRF_FT"][2:end]
-    GIRF_data[:,2] = GIRF_file_y["GIRF_FT"][2:end]
-    GIRF_data[:,3] = GIRF_file_z["GIRF_FT"][2:end]
-    
-    if id ==1
+    GIRF_data[:, 1] = GIRF_file_x["GIRF_FT"][2:end]
+    GIRF_data[:, 2] = GIRF_file_y["GIRF_FT"][2:end]
+    GIRF_data[:, 3] = GIRF_file_z["GIRF_FT"][2:end]
+
+    if id == 1
         GIRF_freq = GIRF_file_z["freq"][2:end]
 
     else
 
         GIRF_freq, dgf, gfmax = time2freq(GIRF_file_z["roTime"])
         GIRF_freq = GIRF_freq[2:end] .* 1000
-    
+
     end
 
     if doFiltering
@@ -379,57 +370,57 @@ function buildGIRF_PN(doPlot = true, doFiltering = true; id = 2)
 
         for l = 1:3
 
-            GIRF_data[:,l] = window .* GIRF_data[:,l]
+            GIRF_data[:, l] = window .* GIRF_data[:, l]
 
         end
 
     end
 
-    if doPlot
+    # if doPlot
 
-        figure("Gx GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,1]))
-        xlim([-30,30])
-        ylim([0.0, 1.05])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gx GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
+    #     xlim([-30, 30])
+    #     ylim([0.0, 1.05])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gy GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,2]))
-        xlim([-30,30])
-        ylim([0.0, 1.05])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gy GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
+    #     xlim([-30, 30])
+    #     ylim([0.0, 1.05])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gz GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,3]))
-        xlim([-30,30])
-        ylim([0.0, 1.05])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gz GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
+    #     xlim([-30, 30])
+    #     ylim([0.0, 1.05])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gx GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,1]))
-        xlim([-30,30])
-        ylim([-pi, pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gx GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
+    #     xlim([-30, 30])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
-        figure("Gy GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,2]))
-        xlim([-30,30])
-        ylim([-pi, pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gy GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
+    #     xlim([-30, 30])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
-        figure("Gz GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,3]))
-        xlim([-30,30])
-        ylim([-pi,pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gz GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
+    #     xlim([-30, 30])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
-    end
+    # end
 
     return GIRF_freq, GIRF_data
 
@@ -451,25 +442,25 @@ loads different measured GIRFs from Siemens Prisma, as computed in Matlab (Zhe "
 * `GIRF_data`           - x 3 data
 * `GIRF_length`           -                        
 """
-function loadGIRFMatlabTim( idGirf = 4 )
+function loadGIRFMatlabTim(idGirf = 4)
     isNewGirf = idGirf >= 1 # file format changed between older and newer ids
-   
+
     if isNewGirf
         pathGirf = "data/GIRF/GIRF_ISMRM2022"
 
-        if idGirf==1
+        if idGirf == 1
             girf_filename_x = joinpath(pathGirf, "2020Nov_Gx.mat")
             girf_filename_y = joinpath(pathGirf, "2020Nov_Gy.mat")
             girf_filename_z = joinpath(pathGirf, "2020Nov_Gz.mat")
-        elseif idGirf==2
+        elseif idGirf == 2
             girf_filename_x = joinpath(pathGirf, "2021Jun_Gx.mat")
             girf_filename_y = joinpath(pathGirf, "2021Jun_Gy.mat")
             girf_filename_z = joinpath(pathGirf, "2021Jun_Gz.mat")
-        elseif idGirf==3
+        elseif idGirf == 3
             girf_filename_x = joinpath(pathGirf, "2021Jun_PosNeg_Gx.mat")
             girf_filename_y = joinpath(pathGirf, "2021Jun_PosNeg_Gy.mat")
             girf_filename_z = joinpath(pathGirf, "2021Jun_PosNeg_Gz.mat")
-        elseif idGirf==4
+        elseif idGirf == 4
             girf_filename_x = joinpath(pathGirf, "2021Nov_PosNeg_Gx.mat")
             girf_filename_y = joinpath(pathGirf, "2021Nov_PosNeg_Gy.mat")
             girf_filename_z = joinpath(pathGirf, "2021Nov_PosNeg_Gz.mat")
@@ -488,12 +479,11 @@ function loadGIRFMatlabTim( idGirf = 4 )
     GIRF_file_y = matread(girf_filename_y)
     GIRF_file_z = matread(girf_filename_z)
 
-
     if isNewGirf
         # average 50 GIRF averages
         tmp_data = GIRF_file_x["GIRF_FT"]
-        GIRF_length = size(tmp_data,1) .-1
-        GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+        GIRF_length = size(tmp_data, 1) .- 1
+        GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
 
         tmp_data = mean(GIRF_file_x["GIRF_FT"], dims = 2)
         GIRF_data[:, 1] = tmp_data[2:end]
@@ -502,18 +492,18 @@ function loadGIRFMatlabTim( idGirf = 4 )
         tmp_data = mean(GIRF_file_z["GIRF_FT"], dims = 2)
         GIRF_data[:, 3] = tmp_data[2:end]
 
-        GIRF_data[:,1] = mean(GIRF_data[:,1], dims=2)
+        GIRF_data[:, 1] = mean(GIRF_data[:, 1], dims = 2)
         # freq not saved, has to be computed
         dwellTimeSig = GIRF_file_z["dwellTimeSig"]
         freq_fullrange = 1 / (dwellTimeSig / 1e6) / 1e3 # Full spectrum width, in unit of kHz
-        GIRF_freq = range(-freq_fullrange/2, stop=freq_fullrange/2, length=GIRF_length)
+        GIRF_freq = range(-freq_fullrange / 2, stop = freq_fullrange / 2, length = GIRF_length)
 
     else
-        GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+        GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
         GIRF_length = length(GIRF_file_x["GIRF_FT"]) .- 1
-        GIRF_data[:,1] = GIRF_file_x["GIRF_FT"][2:end]
-        GIRF_data[:,2] = GIRF_file_y["GIRF_FT"][2:end]
-        GIRF_data[:,3] = GIRF_file_z["GIRF_FT"][2:end]
+        GIRF_data[:, 1] = GIRF_file_x["GIRF_FT"][2:end]
+        GIRF_data[:, 2] = GIRF_file_y["GIRF_FT"][2:end]
+        GIRF_data[:, 3] = GIRF_file_z["GIRF_FT"][2:end]
         GIRF_freq = GIRF_file_z["freq"][2:end]
     end
 
@@ -551,11 +541,11 @@ function buildGIRF_K0(doPlot = true, doFiltering = true; id = 1)
 
     GIRF_length = length(GIRF_file_x["b0ec_FT"]) .- 1
 
-    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length,3)
+    GIRF_data = Matrix{ComplexF64}(undef, GIRF_length, 3)
 
-    GIRF_data[:,1] = GIRF_file_x["b0ec_FT"][2:end]
-    GIRF_data[:,2] = GIRF_file_y["b0ec_FT"][2:end]
-    GIRF_data[:,3] = GIRF_file_z["b0ec_FT"][2:end]
+    GIRF_data[:, 1] = GIRF_file_x["b0ec_FT"][2:end]
+    GIRF_data[:, 2] = GIRF_file_y["b0ec_FT"][2:end]
+    GIRF_data[:, 3] = GIRF_file_z["b0ec_FT"][2:end]
     GIRF_freq = GIRF_file_z["freq"][2:end]
 
     if doFiltering
@@ -564,7 +554,7 @@ function buildGIRF_K0(doPlot = true, doFiltering = true; id = 1)
 
         for l = 1:3
 
-            GIRF_data[:,l] = window .* GIRF_data[:,l]
+            GIRF_data[:, l] = window .* GIRF_data[:, l]
 
         end
 
@@ -572,57 +562,56 @@ function buildGIRF_K0(doPlot = true, doFiltering = true; id = 1)
 
     # ADD PREPROCESSING TO REMOVE HIGH FREQUENCY NOISE
 
-    if doPlot
+    # if doPlot
 
-        figure("Gx GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,1]))
-        xlim([-3,3])
-        ylim([0.0, 80])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gx GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
+    #     xlim([-3, 3])
+    #     ylim([0.0, 80])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gy GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,2]))
-        xlim([-3,3])
-        ylim([0.0, 80])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gy GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
+    #     xlim([-3, 3])
+    #     ylim([0.0, 80])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gz GIRF Magnitude")
-        plot(GIRF_freq, abs.(GIRF_data[:,3]))
-        xlim([-3,3])
-        ylim([0.0, 80])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Magnitude")
+    #     figure("Gz GIRF Magnitude")
+    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
+    #     xlim([-3, 3])
+    #     ylim([0.0, 80])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Magnitude")
 
-        figure("Gx GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,1]))
-        xlim([-3,3])
-        ylim([-pi, pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gx GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
+    #     xlim([-3, 3])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
 
-        figure("Gy GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,2]))
-        xlim([-3,3])
-        ylim([-pi, pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gy GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
+    #     xlim([-3, 3])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
-        figure("Gz GIRF Phase")
-        plot(GIRF_freq, angle.(GIRF_data[:,3]))
-        xlim([-3,3])
-        ylim([-pi,pi])
-        xlabel("Frequency [kHz]")
-        ylabel("GIRF Phase")
+    #     figure("Gz GIRF Phase")
+    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
+    #     xlim([-3, 3])
+    #     ylim([-pi, pi])
+    #     xlabel("Frequency [kHz]")
+    #     ylabel("GIRF Phase")
 
-    end
+    # end
 
     return GIRF_freq, GIRF_data
 
 end
-
 
 ## TODO
 #  function for setting the selfBasis field in the GirfEssential struct

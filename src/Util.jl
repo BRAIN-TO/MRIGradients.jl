@@ -33,9 +33,9 @@ function time2freq(t)
 
     nrs = length(t)
     dt = t[2] .- t[1]
-    f_max = 1 ./dt
+    f_max = 1 ./ dt
     df = f_max ./ nrs
-    f = ((0:nrs-1) .- floor(nrs/2.0)).*df
+    f = ((0:nrs-1) .- floor(nrs / 2.0)) .* df
 
     return f, df, f_max
 
@@ -67,7 +67,7 @@ end
 
 function BW_filter(k_data, t, BW, filterType, beta)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -92,7 +92,7 @@ end
 
 function BW_window(array, f, BW, filterType, beta)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -112,7 +112,7 @@ end
 
 function CenteredPhase(array)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -132,7 +132,7 @@ end
 
 function CenteredTime(dt, nrs)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -142,7 +142,7 @@ end
 
 function ComputeInputs()
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -166,7 +166,7 @@ end
 
 function raised_cosine(f, T, beta)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -193,7 +193,7 @@ end
 
 function sweeps(t, T_acq, f1, f2, phi0, A, t_start, type)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -215,9 +215,9 @@ end
 #
 # TODO
 
-function trapezoid(t,ons,amp,dur,plateau,dur2)
+function trapezoid(t, ons, amp, dur, plateau, dur2)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
 
@@ -241,35 +241,9 @@ end
 
 function VariableSmoothing(SIRF, f, f2)
 
-  @error "NOT IMPLEMENTED YET"
+    @error "NOT IMPLEMENTED YET"
 
 end
-
-
-# ## Currently only works for spiral trajectories but will have to be extended to cartesian!
-# function parseTrajectoryGradients(a::AcquisitionData)
-
-#   for l = 1:length(a.traj)
-      
-#       nProfiles = a.traj[l].numProfiles
-#       nSamples = a.traj[l].numSamplingPerProfile
-#       nodes = a.traj[l].nodes
-
-#       for profile = 1:nProfiles
-          
-#           ilExtractor = nSamples*(profile-1) .+ (1:nSamples)
-#           ilNodes = nodes[:,ilExtractor]
-
-#           figure()
-#           ilGrads = nodes_to_gradients(ilNodes)
-
-#           plot(ilGrads')
-
-#       end
-  
-#   end
-      
-# end
 
 """
     nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
@@ -285,25 +259,24 @@ Function to calculate the gradient train used to acquire k-space data
 # Outputs
 * `gradients::Matrix` - gradients corresponding to k-space samples. Size: (`2` x `N`) where N is the number of k-space samples
 """
-function nodes_to_gradients(nodes::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
+function nodes_to_gradients(nodes::Matrix; gamma = 42577478, dwellTime = 2e-6, FOV = [220, 220, 1], reconSize = [200, 200, 1])
 
-  ## Normalized Conversion (norm kspace to grads in T/m) is scalingFactor = reconSize/(gamma*dwellTime*FOV)
-  conversionFactor = reconSize./ (gamma*dwellTime.*FOV) .*1000 # The 1000 factor is the conversion from mm to m
+    ## Normalized Conversion (norm kspace to grads in T/m) is scalingFactor = reconSize/(gamma*dwellTime*FOV)
+    conversionFactor = reconSize ./ (gamma * dwellTime .* FOV) .* 1000 # The 1000 factor is the conversion from mm to m
 
-  is3DTraj = (size(nodes,1) == 3)
+    is3DTraj = (size(nodes, 1) == 3)
 
-  if is3DTraj
-    gradients = diff(hcat([0; 0; 0], nodes), dims = 2)
-    gradients = gradients .* conversionFactor
-  else
-    gradients = diff(hcat([0; 0], nodes), dims = 2)
-    gradients = gradients .* conversionFactor[1:2]
-  end
+    if is3DTraj
+        gradients = diff(hcat([0; 0; 0], nodes), dims = 2)
+        gradients = gradients .* conversionFactor
+    else
+        gradients = diff(hcat([0; 0], nodes), dims = 2)
+        gradients = gradients .* conversionFactor[1:2]
+    end
 
-  return gradients
+    return gradients
 
 end
-
 
 """
     gradients_to_nodes(gradients::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
@@ -319,21 +292,21 @@ Function to calculate the k-space nodes from an applied gradient train
 # Outputs
 * `nodes::Matrix` - k-space nodes corresponding to applied gradient train. Size: (`2` x `N`) where N is the number of gradient samples
 """
-function gradients_to_nodes(gradients::Matrix; gamma=42577478, dwellTime=2e-6, FOV=[220,220,1],reconSize=[200,200,1])
+function gradients_to_nodes(gradients::Matrix; gamma = 42577478, dwellTime = 2e-6, FOV = [220, 220, 1], reconSize = [200, 200, 1])
 
-  ## Normalized Conversion (grads in T/m to normalized k-space) is scalingFactor = (gamma*dwellTime*FOV)/reconSize
-  conversionFactor = ((gamma*dwellTime.*FOV) ./ reconSize) ./1000 # The 1000 is the conversion from mm to m
+    ## Normalized Conversion (grads in T/m to normalized k-space) is scalingFactor = (gamma*dwellTime*FOV)/reconSize
+    conversionFactor = ((gamma * dwellTime .* FOV) ./ reconSize) ./ 1000 # The 1000 is the conversion from mm to m
 
-  is3DTraj = (size(gradients,1) == 3)
+    is3DTraj = (size(gradients, 1) == 3)
 
-  nodes = cumsum(gradients, dims = 2)
+    nodes = cumsum(gradients, dims = 2)
 
-  if is3DTraj
-    nodes = nodes .* conversionFactor
-  else
-    nodes = nodes .* conversionFactor[1:2]
-  end
+    if is3DTraj
+        nodes = nodes .* conversionFactor
+    else
+        nodes = nodes .* conversionFactor[1:2]
+    end
 
-  return nodes
+    return nodes
 
 end

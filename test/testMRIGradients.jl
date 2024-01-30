@@ -27,6 +27,25 @@ function test_grads()
 
 end
 
+function test_girf_essential()
+
+    g = load_object("data/girf_app_k1.jld2")
+    @test size(g.essential) == (16383,3)
+    @test size(g.essential,1) == 16383
+    
+    g.essential.name = "a"
+    @test string(g.essential) == "a"
+    @test length(g.essential) == 16383
+    
+    g.essential.isFreqDomainGirf = false
+    convertDomain!(g.essential)
+
+    g.essential.isFreqDomainGirf = true
+    convertDomain!(g.essential)
+    @test true
+
+end
+
 function test_display_girf()
 
     girf_applier_k1 = load_object("data/girf_app_k1.jld2")
@@ -53,6 +72,7 @@ function test_package()
         test_grads()
         test_girf_applier()
         test_display_girf()
+        test_girf_essential()
 
     end
 

@@ -285,11 +285,11 @@ end
 #
 # TODO
 
-function saveGirf(g::GirfEssential, filename::String)
+# function saveGirf(g::GirfEssential, filename::String)
 
-    @info "Saved GirfEssential to $filename"
+#     @info "Saved GirfEssential to $filename"
 
-end
+# end
 
 ## Function for building GIRF from the measurements taken by Tim in October 2020
 # Takes in nothing, uses fixed filenames for now as we only have one set of GIRF measurements
@@ -615,12 +615,11 @@ end
 
 ## TODO
 #  function for setting the selfBasis field in the GirfEssential struct
-function setSelfBasis(g::GirfEssential)
+# function setSelfBasis(g::GirfEssential)
 
-    #Implement the method selfBasis written in lines 84 to 99 of GirfEssential.m in Johanna's GIRF code
+#     #Implement the method selfBasis written in lines 84 to 99 of GirfEssential.m in Johanna's GIRF code
 
-end
-
+# end
 
 """
     displayGirf(g::GirfEssential)

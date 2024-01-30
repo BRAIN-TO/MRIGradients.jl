@@ -50,6 +50,10 @@ function test_display_girf()
 
     girf_applier_k1 = load_object("data/girf_app_k1.jld2")
     displayGirf(girf_applier_k1.essential)
+    girf_applier_k1.essential.girf = []
+    girf_applier_k1.essential.girfTime = []
+    displayGirf(girf_applier_k1.essential)
+    print(girf_applier_k1.essential)
     @test true
 
 end

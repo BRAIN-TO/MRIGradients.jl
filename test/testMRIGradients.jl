@@ -17,11 +17,32 @@ function test_grads()
 
 end
 
+function test_display_girf()
+
+    girf_applier_k1 = load_object("data/girf_app_k1.jld2")
+    displayGirf(girf_applier_k1.essential)
+    @test true
+
+end
+
+function test_girf_applier()
+
+    girf_applier_k1 = load_object("data/girf_app_k1.jld2")
+
+    girf_applier_2 = GirfApplier(deepcopy(girf_applier_k1.essential),deepcopy(girf_applier_k1.gamma))
+
+    @test girf_applier_2.gamma == girf_applier_k1.gamma
+    @test girf_applier_2.essential.df == girf_applier_k1.essential.df
+
+end
+
 function test_package()
 
     @testset "Package" begin
 
         test_grads()
+        test_girf_applier()
+        test_display_girf()
 
     end
 

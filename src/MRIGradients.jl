@@ -21,7 +21,8 @@ export apply_girf,
     buildGIRF_PN,
     time2freq,
     nodes_to_gradients,
-    gradients_to_nodes
+    gradients_to_nodes,
+    displayGirf
 
 
 include("Util.jl")

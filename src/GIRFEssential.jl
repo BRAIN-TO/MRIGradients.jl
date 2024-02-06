@@ -213,28 +213,6 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
 end
 
 
-## DEPRECATED: Function to load girf data from file into GirfEssential object
-#
-# IN
-# filename  Name of file to load data from
-#
-# OUT
-#
-# EXAMPLE
-#   girfE.Load(mySavedGirfFilename);
-#
-#   See also GirfEssential
-#
-# Author:   Johanna Vannesjo (johanna.vannesjo@gmail.com)
-# Copyright (C) 2014 IBT, University of Zurich and ETH Zurich,
-#               2016 FMRIB centre, University of Oxford
-#
-# This file is part of a code package for GIRF computation and application.
-# The package is available under a BSD 3-clause license. Further info see:
-# https://github.com/MRI-gradient/girf
-#
-
-
 """
     loadGirf(degree, id)
 
@@ -376,52 +354,6 @@ function buildGIRF_PN(doPlot = true, doFiltering = true; id = 2)
 
     end
 
-    # if doPlot
-
-    #     figure("Gx GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gy GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gz GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gx GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gy GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gz GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    # end
-
     return GIRF_freq, GIRF_data
 
 end
@@ -559,55 +491,6 @@ function buildGIRF_K0(doPlot = true, doFiltering = true; id = 1)
         end
 
     end
-
-    # ADD PREPROCESSING TO REMOVE HIGH FREQUENCY NOISE
-
-    # if doPlot
-
-    #     figure("Gx GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gy GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gz GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gx GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-
-    #     figure("Gy GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gz GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    # end
 
     return GIRF_freq, GIRF_data
 

@@ -1,7 +1,7 @@
 name = "MRIGradients"
 uuid = "6ea382ba-d04a-44a2-b811-544bd2aee867"
 authors = ["Alexander Jaffray <alexander.jaffray@gmail.com>"]
-version = "0.1.4"
+version = "0.1.3"
 
 [deps]
 AbstractFFTs = "621f4979-c628-5d54-868e-fcf4e3e8185c"

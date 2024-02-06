@@ -15,13 +15,13 @@ mutable struct GirfEssential
     outBasis::AbstractVecOrMat
 
     # [nSamples x nOutBasis x nInChannels] Calculated GIRF (self and cross-terms)
-    girf::AbstractVecOrMat
+    girf::AbstractArray
 
     # [nSamples] frequency vector [units Hz]
     freq::AbstractVector
 
     # [nSamples x nOutBasis x nInChannels] if GIRF is in the time domain
-    girfTime::AbstractVecOrMat
+    girfTime::AbstractArray
 
     # [nSamples] time vector
     time::AbstractVector
@@ -68,7 +68,7 @@ Function to create a girf structure with the same interface as the constructor i
 # Outputs
 * g::GirfEssential - Constructed GirfEssential object.
 """
-function GirfEssential(data::AbstractVecOrMat, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
+function GirfEssential(data::AbstractArray, vect::AbstractVector, isFreq::Bool, inChannels, outBasis)
 
     # Define unused and auxiliary parameters
     # inChannels = ["Empty"]
@@ -213,28 +213,6 @@ function readGIRFFile(pathX::String, pathY::String, pathZ::String, varName::Stri
 end
 
 
-## DEPRECATED: Function to load girf data from file into GirfEssential object
-#
-# IN
-# filename  Name of file to load data from
-#
-# OUT
-#
-# EXAMPLE
-#   girfE.Load(mySavedGirfFilename);
-#
-#   See also GirfEssential
-#
-# Author:   Johanna Vannesjo (johanna.vannesjo@gmail.com)
-# Copyright (C) 2014 IBT, University of Zurich and ETH Zurich,
-#               2016 FMRIB centre, University of Oxford
-#
-# This file is part of a code package for GIRF computation and application.
-# The package is available under a BSD 3-clause license. Further info see:
-# https://github.com/MRI-gradient/girf
-#
-
-
 """
     loadGirf(degree, id)
 
@@ -285,11 +263,11 @@ end
 #
 # TODO
 
-function saveGirf(g::GirfEssential, filename::String)
+# function saveGirf(g::GirfEssential, filename::String)
 
-    @info "Saved GirfEssential to $filename"
+#     @info "Saved GirfEssential to $filename"
 
-end
+# end
 
 ## Function for building GIRF from the measurements taken by Tim in October 2020
 # Takes in nothing, uses fixed filenames for now as we only have one set of GIRF measurements
@@ -375,52 +353,6 @@ function buildGIRF_PN(doPlot = true, doFiltering = true; id = 2)
         end
 
     end
-
-    # if doPlot
-
-    #     figure("Gx GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gy GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gz GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
-    #     xlim([-30, 30])
-    #     ylim([0.0, 1.05])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gx GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gy GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gz GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
-    #     xlim([-30, 30])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    # end
 
     return GIRF_freq, GIRF_data
 
@@ -560,67 +492,17 @@ function buildGIRF_K0(doPlot = true, doFiltering = true; id = 1)
 
     end
 
-    # ADD PREPROCESSING TO REMOVE HIGH FREQUENCY NOISE
-
-    # if doPlot
-
-    #     figure("Gx GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 1]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gy GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 2]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gz GIRF Magnitude")
-    #     plot(GIRF_freq, abs.(GIRF_data[:, 3]))
-    #     xlim([-3, 3])
-    #     ylim([0.0, 80])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Magnitude")
-
-    #     figure("Gx GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 1]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-
-    #     figure("Gy GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 2]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    #     figure("Gz GIRF Phase")
-    #     plot(GIRF_freq, angle.(GIRF_data[:, 3]))
-    #     xlim([-3, 3])
-    #     ylim([-pi, pi])
-    #     xlabel("Frequency [kHz]")
-    #     ylabel("GIRF Phase")
-
-    # end
-
     return GIRF_freq, GIRF_data
 
 end
 
 ## TODO
 #  function for setting the selfBasis field in the GirfEssential struct
-function setSelfBasis(g::GirfEssential)
+# function setSelfBasis(g::GirfEssential)
 
-    #Implement the method selfBasis written in lines 84 to 99 of GirfEssential.m in Johanna's GIRF code
+#     #Implement the method selfBasis written in lines 84 to 99 of GirfEssential.m in Johanna's GIRF code
 
-end
-
+# end
 
 """
     displayGirf(g::GirfEssential)

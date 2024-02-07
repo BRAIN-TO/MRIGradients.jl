@@ -19,6 +19,7 @@ Waveforms = "cb13b1c6-351e-5134-b3ad-d6a530956a82"
 [compat]
 AbstractFFTs = "1.2.1"
 DSP = "0.7.8"
+DelimitedFiles = "1"
 Dierckx = "0.5.3"
 Documenter = "0.27.24"
 FourierTools = "0.4.2"
